@@ -23,7 +23,7 @@
         </ul>
 
         <div class="tab-content">
-            {% include '@PhraseanetSDK/Profiler/request.html.twig' with {'index':index, 'request': call.request, 'requestContent': call.requestContent, 'time': call.time} %}
+            {% include '@PhraseanetSDK/Profiler/request.html.twig' with {'index':index, 'request': call.request, 'requestContent': call.requestContent, 'time': call.time, 'curl': call.curl} %}
             {% include '@PhraseanetSDK/Profiler/response.html.twig' with {'index':index, 'response':call.response, 'responseContent': call.responseContent, 'time': call.time, 'phraseanet': call.phraseanet} %}
         </div>
 

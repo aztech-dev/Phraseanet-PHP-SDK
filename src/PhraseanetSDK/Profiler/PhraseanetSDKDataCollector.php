@@ -22,9 +22,15 @@ class PhraseanetSDKDataCollector extends DataCollector
      */
     private $profiler;
 
+    /**
+     * @var CurlFormatter
+     */
+    private $formatter;
+
     public function __construct(HistoryPlugin $profiler)
     {
         $this->profiler = $profiler;
+        $this->formatter = new CurlFormatter(80);
     }
 
     /**
@@ -75,6 +81,7 @@ class PhraseanetSDKDataCollector extends DataCollector
 
             $this->data['calls'][] = array(
                 'request' => $this->sanitizeRequest($request),
+                'curl' => $this->formatter->format($request),
                 'requestContent' => $requestContent,
                 'response' => $this->sanitizeResponse($response),
                 'responseContent' => json_decode($response->getBody(true)),
