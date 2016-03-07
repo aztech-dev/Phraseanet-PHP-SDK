@@ -3,7 +3,7 @@
 namespace PhraseanetSDK\Tests\Http;
 
 use Guzzle\Plugin\Cache\CachePlugin;
-use PhraseanetSDK\Http\GuzzleAdapter;
+use PhraseanetSDK\Client\GuzzleAdapter;
 use Guzzle\Http\Exception\CurlException;
 use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Exception\BadResponseException as GuzzleBadResponseException;

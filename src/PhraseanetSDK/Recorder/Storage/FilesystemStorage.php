@@ -11,8 +11,6 @@
 
 namespace PhraseanetSDK\Recorder\Storage;
 
-use PhraseanetSDK\Exception\RuntimeException;
-
 class FilesystemStorage implements StorageInterface
 {
     private $file;
@@ -48,7 +46,7 @@ class FilesystemStorage implements StorageInterface
         $option = defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0;
 
         if (false === @file_put_contents($this->file, json_encode($data, $option))) {
-            throw new RuntimeException('Unable to save data to file');
+            throw new \RuntimeException('Unable to save data to file');
         }
     }
 

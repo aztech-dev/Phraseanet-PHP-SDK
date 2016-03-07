@@ -11,8 +11,9 @@
 
 namespace PhraseanetSDK;
 
-use PhraseanetSDK\Http\APIGuzzleAdapter;
+use PhraseanetSDK\Client\APIGuzzleAdapter;
 use PhraseanetSDK\AbstractRepository;
+use PhraseanetSDK\Client\Client;
 use PhraseanetSDK\Search\SearchRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -20,9 +21,9 @@ use Psr\Log\NullLogger;
 class EntityManager
 {
     /**
-     * @var APIGuzzleAdapter
+     * @var Client
      */
-    private $adapter;
+    private $client;
 
     /**
      * @var LoggerInterface
@@ -35,14 +36,14 @@ class EntityManager
     private $repositories = array();
 
     /**
-     * @param APIGuzzleAdapter $v1Adapter
+     * @param Client $client
      * @param LoggerInterface $logger
      */
     public function __construct(
-        APIGuzzleAdapter $adapter,
+        Client $client,
         LoggerInterface $logger = null
     ) {
-        $this->adapter = $adapter;
+        $this->client = $client;
         $this->logger = $logger ?: new NullLogger();
     }
 
@@ -57,11 +58,11 @@ class EntityManager
     /**
      * Return the client attached to this entity manager
      *
-     * @return APIGuzzleAdapter
+     * @return Client
      */
-    public function getAdapter()
+    public function getClient()
     {
-        return $this->adapter;
+        return $this->client;
     }
 
     /**
@@ -80,13 +81,11 @@ class EntityManager
         $objectName = sprintf('\\PhraseanetSDK\\Repository\\%s', $className);
 
         if ($name == 'search') {
-            return new SearchRepository($this, $this->adapter);
+            return new SearchRepository($this, $this->client);
         }
 
         if (!class_exists($objectName)) {
-            throw new Exception\InvalidArgumentException(
-                sprintf('Class %s does not exists', $objectName)
-            );
+            throw new \InvalidArgumentException(sprintf('Class %s does not exists', $objectName));
         }
 
         return $this->repositories[$name] = new $objectName($this);

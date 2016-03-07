@@ -12,10 +12,9 @@
 namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
-use PhraseanetSDK\Exception\RuntimeException;
+use PhraseanetSDK\Exception\BadResponseException;
 use PhraseanetSDK\Exception\NotFoundException;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhraseanetSDK\EntityHydrator;
 
 class Subdef extends AbstractRepository
 {
@@ -27,7 +26,6 @@ class Subdef extends AbstractRepository
      * @param  string[] $devices an array of desired devices
      * @param  string[] $mimes an array of desired mimetypes
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function findByRecord($databoxId, $recordId, $devices = array(), $mimes = array())
     {
@@ -44,7 +42,7 @@ class Subdef extends AbstractRepository
         $response = $this->query('GET', sprintf('v1/records/%d/%d/embed/', $databoxId, $recordId), $parameters);
 
         if (true !== $response->hasProperty('embed')) {
-            throw new RuntimeException('Missing "embed" property in response content');
+            throw new BadResponseException('Missing "embed" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\Subdef::fromList($response->getProperty('embed')));

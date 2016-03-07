@@ -12,25 +12,23 @@
 namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
-use PhraseanetSDK\Exception\RuntimeException;
+use PhraseanetSDK\Exception\BadResponseException;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhraseanetSDK\EntityHydrator;
 
 class DataboxDocumentStructure extends AbstractRepository
 {
     /**
      * Find All structure document of the desired databox
      *
-     * @param  integer          $databoxId The databox id
+     * @param  integer $databoxId The databox id
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function findByDatabox($databoxId)
     {
         $response = $this->query('GET', sprintf('v1/databoxes/%d/metadatas/', $databoxId));
 
         if (true !== $response->hasProperty('document_metadatas')) {
-            throw new RuntimeException('Missing "document_metadatas_structure" property in response content');
+            throw new BadResponseException('Missing "document_metadatas_structure" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\DataboxDocumentStructure::fromList(

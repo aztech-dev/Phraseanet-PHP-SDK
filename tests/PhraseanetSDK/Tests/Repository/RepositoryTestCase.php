@@ -4,8 +4,8 @@ namespace PhraseanetSDK\Tests\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PhraseanetSDK\Entity\Result;
-use PhraseanetSDK\Http\GuzzleAdapter;
-use PhraseanetSDK\Http\APIGuzzleAdapter;
+use PhraseanetSDK\Client\GuzzleAdapter;
+use PhraseanetSDK\Client\APIGuzzleAdapter;
 use Guzzle\Plugin\Mock\MockPlugin;
 use Guzzle\Http\Message\Response;
 use Guzzle\Http\Client as GuzzleClient;

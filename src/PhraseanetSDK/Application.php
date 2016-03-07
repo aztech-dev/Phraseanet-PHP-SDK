@@ -11,10 +11,9 @@
 
 namespace PhraseanetSDK;
 
-use PhraseanetSDK\Http\GuzzleAdapter;
-use PhraseanetSDK\Exception\InvalidArgumentException;
-use PhraseanetSDK\Http\ConnectedGuzzleAdapter;
-use PhraseanetSDK\Http\APIGuzzleAdapter;
+use PhraseanetSDK\Client\AuthenticatedClient;
+use PhraseanetSDK\Client\Client;
+use PhraseanetSDK\Client\GuzzleClient;
 use Psr\Log\NullLogger;
 
 /**
@@ -26,27 +25,27 @@ class Application implements ApplicationInterface
      * Creates the application.
      *
      * @param array $config
-     * @param GuzzleAdapter $adapter
+     * @param Client $client
      * @return Application
      */
-    public static function create(array $config, GuzzleAdapter $adapter = null)
+    public static function create(array $config, Client $client = null)
     {
         foreach (array('client-id', 'secret') as $key) {
             if (!isset($config[$key]) || !is_string($config[$key])) {
-                throw new InvalidArgumentException(sprintf('Missing or invalid parameter "%s"', $key));
+                throw new \InvalidArgumentException(sprintf('Missing or invalid parameter "%s"', $key));
             }
         }
 
-        if (null === $adapter) {
+        if (null === $client) {
             if (!isset($config['url']) || !is_string($config['url'])) {
-                throw new InvalidArgumentException(sprintf('Missing or invalid parameter "url"'));
+                throw new \InvalidArgumentException(sprintf('Missing or invalid parameter "url"'));
             }
 
-            $adapter = GuzzleAdapter::create($config['url']);
+            $client = new GuzzleClient(new \GuzzleHttp\Client([ 'base_uri' => $config['url'] ]));
         }
 
         return new static(
-            $adapter,
+            $client,
             $config['client-id'],
             $config['secret']
         );
@@ -58,14 +57,14 @@ class Application implements ApplicationInterface
     private static function assertValidToken($token)
     {
         if ('' === trim($token)) {
-            throw new InvalidArgumentException('Token can not be empty.');
+            throw new \InvalidArgumentException('Token can not be empty.');
         }
     }
 
     /**
-     * @var GuzzleAdapter
+     * @var Client
      */
-    private $adapter;
+    private $client;
 
     /**
      * @var string Application client ID. Used by Oauth2Connector
@@ -88,7 +87,7 @@ class Application implements ApplicationInterface
     private $entityManagers = array();
 
     /**
-     * @var APIGuzzleAdapter[]
+     * @var Client[]
      */
     private $adapters = array();
 
@@ -102,9 +101,9 @@ class Application implements ApplicationInterface
      */
     private $monitors = array();
 
-    public function __construct(GuzzleAdapter $adapter, $clientId, $secret)
+    public function __construct(Client $adapter, $clientId, $secret)
     {
-        $this->adapter = $adapter;
+        $this->client = $adapter;
         $this->clientId = $clientId;
         $this->secret = $secret;
     }
@@ -118,7 +117,7 @@ class Application implements ApplicationInterface
      */
     public function setExtendedMode($mode)
     {
-        $this->adapter->setExtended($mode);
+        $this->client->setExtended($mode);
     }
 
     /**
@@ -127,7 +126,7 @@ class Application implements ApplicationInterface
     public function getOauth2Connector()
     {
         if ($this->connector === null) {
-            $this->connector = new OAuth2Connector($this->adapter, $this->clientId, $this->secret);
+            $this->connector = new OAuth2Connector($this->client, $this->clientId, $this->secret);
         }
 
         return $this->connector;
@@ -179,23 +178,25 @@ class Application implements ApplicationInterface
     }
 
     /**
-     * Returns the guzzle adapter
+     * Returns the HTTP client
      *
-     * @return GuzzleAdapter
+     * @return Client
      */
-    public function getAdapter()
+    public function getClient()
     {
-        return $this->adapter;
+        return $this->client;
     }
 
+    /**
+     * @param $token
+     * @return Client
+     */
     private function getAdapterByToken($token)
     {
         if (!isset($this->adapters[$token])) {
-            $this->adapters[$token] = new APIGuzzleAdapter(
-                new ConnectedGuzzleAdapter(
-                    $token,
-                    $this->adapter
-                )
+            $this->adapters[$token] = new AuthenticatedClient(
+                $this->client,
+                $token
             );
         }
 

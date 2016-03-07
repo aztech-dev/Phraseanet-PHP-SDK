@@ -16,10 +16,6 @@ class LimitFilter implements FilterInterface
      */
     public function apply(array &$data)
     {
-        $n = count($data) - $this->limit;
-
-        for ($i = 0; $i < $n; $i++) {
-            array_shift($data);
-        }
+        $data = array_slice($data, 0 - $this->limit, null, true);
     }
 }

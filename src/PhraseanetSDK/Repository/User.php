@@ -13,6 +13,7 @@ namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
 use PhraseanetSDK\EntityHydrator;
+use PhraseanetSDK\Exception\BadResponseException;
 use PhraseanetSDK\Exception\RuntimeException;
 
 class User extends AbstractRepository
@@ -38,7 +39,7 @@ class User extends AbstractRepository
         $response = $this->query('GET', 'v1/me/');
 
         if (!$response->hasProperty('user')) {
-            throw new RuntimeException('Missing "user" property in response content');
+            throw new BadResponseException('Missing "user" property in response content');
         }
 
         /** @var \PhraseanetSDK\Entity\User $user */
@@ -62,7 +63,7 @@ class User extends AbstractRepository
         ));
 
         if (!$response->hasProperty('demands')) {
-            throw new RuntimeException('Missing "demands" property in response content');
+            throw new BadResponseException('Missing "demands" property in response content');
         }
 
         return $response->getProperty('demands');
@@ -79,7 +80,7 @@ class User extends AbstractRepository
         $response = $this->query('POST', 'v1/accounts/reset-password/' . $emailAddress . '/');
 
         if (!$response->hasProperty('reset_token')) {
-            throw new RuntimeException('Missing "token" property in response content');
+            throw new BadResponseException('Missing "token" property in response content');
         }
 
         return (string)$response->getProperty('reset_token');
@@ -99,7 +100,7 @@ class User extends AbstractRepository
         ));
 
         if (!$response->hasProperty('success')) {
-            throw new RuntimeException('Missing "success" property in response content');
+            throw new BadResponseException('Missing "success" property in response content');
         }
 
         return (bool)$response->getProperty('success');
@@ -116,7 +117,7 @@ class User extends AbstractRepository
         ), array('Content-Type' => 'application/json'));
 
         if (!$response->hasProperty('success')) {
-            throw new RuntimeException('Missing "success" property in response content');
+            throw new BadResponseException('Missing "success" property in response content');
         }
 
         return (bool)$response->getProperty('success');
@@ -191,7 +192,7 @@ class User extends AbstractRepository
         );
 
         if (!$response->hasProperty('success')) {
-            throw new RuntimeException('Missing "success" property in response content');
+            throw new BadResponseException('Missing "success" property in response content');
         }
 
         return (bool)$response->getProperty('success');
@@ -213,7 +214,7 @@ class User extends AbstractRepository
         $response = $this->query('POST', 'v1/accounts/unlock/' . $token . '/', array(), array());
 
         if (!$response->hasProperty('success')) {
-            throw new \RuntimeException('Missing "success" property in response content');
+            throw new BadResponseException('Missing "success" property in response content');
         }
 
         return (bool)$response->getProperty('success');

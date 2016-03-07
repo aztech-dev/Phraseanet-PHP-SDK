@@ -17,17 +17,19 @@
   ],
   "require": {
     "php": ">=5.5",
-    "doctrine/cache": "~1.0",
-    "doctrine/collections": "~1.0",
-    "guzzle/guzzle": "~3.0"
+    "doctrine/collections": "^1.0",
+    "guzzlehttp/guzzle": "^6.0",
+    "psr/http-message": "^1.0"
   },
   "require-dev": {
+    "doctrine/cache": "^1.6",
+    "kevinrob/guzzle-cache-middleware": "^1.1",
+    "phpunit/phpunit": "^4.0",
     "sami/sami": "^1.0",
     "silex/silex": "^1.0",
     "silex/web-profiler": "^1.0",
-    "symfony/console": "^2.0",
-    "phpunit/phpunit": "^4.0",
-    "squizlabs/php_codesniffer": "^2.3"
+    "squizlabs/php_codesniffer": "^2.3",
+    "symfony/console": "^2.0"
   },
   "suggest": {
     "silex/web-profiler": "To use the WebProfiler with silex",

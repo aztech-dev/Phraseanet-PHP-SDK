@@ -11,8 +11,8 @@
 
 namespace PhraseanetSDK;
 
-use PhraseanetSDK\Http\APIGuzzleAdapter;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhraseanetSDK\Client\Client;
 
 /**
  * @method Monitor getScheduler()
@@ -24,7 +24,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Monitor
 {
     /**
-     * @var APIGuzzleAdapter
+     * @var Client
      */
     private $adapter;
 
@@ -66,7 +66,7 @@ class Monitor
         ),
     );
 
-    public function __construct(APIGuzzleAdapter $adapter)
+    public function __construct(Client $adapter)
     {
         $this->adapter = $adapter;
     }

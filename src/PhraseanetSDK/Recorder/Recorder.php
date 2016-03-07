@@ -11,7 +11,6 @@
 
 namespace PhraseanetSDK\Recorder;
 
-use Guzzle\Plugin\History\HistoryPlugin;
 use PhraseanetSDK\Recorder\Storage\StorageInterface;
 use PhraseanetSDK\Recorder\Filters\FilterInterface;
 
@@ -22,7 +21,7 @@ class Recorder
     private $extractor;
     private $filters = array();
 
-    public function __construct(HistoryPlugin $plugin, StorageInterface $storage, RequestExtractor $extractor)
+    public function __construct(History $plugin, StorageInterface $storage, RequestExtractor $extractor)
     {
         $this->plugin = $plugin;
         $this->storage = $storage;

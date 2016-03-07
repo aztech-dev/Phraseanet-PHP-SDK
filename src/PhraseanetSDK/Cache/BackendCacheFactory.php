@@ -34,7 +34,7 @@ class BackendCacheFactory
                 $cache = $this->createMemcached($host, $port);
                 break;
             default:
-                throw new RuntimeException(sprintf('Cache `%s` is not supported', $type));
+                throw new \RuntimeException(sprintf('Cache `%s` is not supported', $type));
                 break;
         }
 
@@ -57,7 +57,7 @@ class BackendCacheFactory
         $stats = @$memcache->getExtendedStats();
 
         if (!isset($stats[$key]) || false === $stats[$key]) {
-            throw new RuntimeException(sprintf(
+            throw new \RuntimeException(sprintf(
                 "Memcache instance with host '%s' and port '%s' is not reachable",
                 $host,
                 $port
@@ -79,7 +79,7 @@ class BackendCacheFactory
         $stats = @$memcached->getStats();
 
         if (!isset($stats[$key]) || false === $stats[$key] || '' === $stats[$key]['version']) {
-            throw new RuntimeException(sprintf(
+            throw new \RuntimeException(sprintf(
                 "Memcached instance with host '%s' and port '%s' is not reachable",
                 $host,
                 $port

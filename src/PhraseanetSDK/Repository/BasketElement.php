@@ -12,25 +12,23 @@
 namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
-use PhraseanetSDK\Exception\RuntimeException;
+use PhraseanetSDK\Exception\BadResponseException;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhraseanetSDK\EntityHydrator;
 
 class BasketElement extends AbstractRepository
 {
     /**
      * Find all basket elements in the provided basket id
      *
-     * @param  integer          $basketId The provided basket id
+     * @param  integer $basketId The provided basket id
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function findByBasket($basketId)
     {
         $response = $this->query('GET', sprintf('v1/baskets/%d/content/', $basketId));
 
         if (true !== $response->hasProperty('basket_elements')) {
-            throw new RuntimeException('Missing "basket_elements" property in response content');
+            throw new BadResponseException('Missing "basket_elements" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\BasketElement::fromList(

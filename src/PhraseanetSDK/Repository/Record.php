@@ -13,18 +13,17 @@ namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
 use PhraseanetSDK\Entity\Query;
-use PhraseanetSDK\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhraseanetSDK\Exception\BadResponseException;
 
 class Record extends AbstractRepository
 {
     /**
      * Find the record by its id that belongs to the provided databox
      *
-     * @param  integer                      $databoxId The record databox id
-     * @param  integer                      $recordId  The record id
+     * @param  integer $databoxId The record databox id
+     * @param  integer $recordId The record id
      * @return \PhraseanetSDK\Entity\Record
-     * @throws RuntimeException
      */
     public function findById($databoxId, $recordId)
     {
@@ -33,7 +32,7 @@ class Record extends AbstractRepository
         $response = $this->query('GET', $path);
 
         if (true !== $response->hasProperty('record')) {
-            throw new RuntimeException('Missing "record" property in response content');
+            throw new BadResponseException('Missing "record" property in response content');
         }
 
         return \PhraseanetSDK\Entity\Record::fromValue($response->getProperty('record'));
@@ -42,21 +41,20 @@ class Record extends AbstractRepository
     /**
      * Find records
      *
-     * @param  integer          $offsetStart The offset
-     * @param  integer          $perPage     The number of item per page
+     * @param  integer $offsetStart The offset
+     * @param  integer $perPage The number of item per page
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function find($offsetStart, $perPage)
     {
         $response = $this->query('POST', 'v1/records/search/', array(), array(
-            'query'        => 'all',
-            'offset_start' => (int) $offsetStart,
-            'per_page'     => (int) $perPage,
+            'query' => 'all',
+            'offset_start' => (int)$offsetStart,
+            'per_page' => (int)$perPage,
         ));
 
         if (true !== $response->hasProperty('results')) {
-            throw new RuntimeException('Missing "results" property in response content');
+            throw new BadResponseException('Missing "results" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\Record::fromList(
@@ -67,7 +65,7 @@ class Record extends AbstractRepository
     /**
      * Search for records
      *
-     * @param  array                       $parameters Query parameters
+     * @param  array $parameters Query parameters
      * @return \PhraseanetSDK\Entity\Query object
      * @throws RuntimeException
      */

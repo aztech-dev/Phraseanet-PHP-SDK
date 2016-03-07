@@ -2,7 +2,7 @@
 
 namespace PhraseanetSDK;
 
-use PhraseanetSDK\Http\GuzzleAdapter;
+use PhraseanetSDK\Client\GuzzleAdapter;
 use PhraseanetSDK\Exception\AuthenticationException;
 use PhraseanetSDK\Exception\BadResponseException;
 

@@ -13,8 +13,8 @@ namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
 use PhraseanetSDK\Entity\Query;
-use PhraseanetSDK\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhraseanetSDK\Exception\BadResponseException;
 
 class Story extends AbstractRepository
 {
@@ -22,9 +22,8 @@ class Story extends AbstractRepository
      * Find the story by its id that belongs to the provided databox
      *
      * @param  integer $databoxId The record databox id
-     * @param  integer $recordId  The record id
+     * @param  integer $recordId The record id
      * @return \PhraseanetSDK\Entity\Story
-     * @throws RuntimeException
      */
     public function findById($databoxId, $recordId)
     {
@@ -33,7 +32,7 @@ class Story extends AbstractRepository
         $response = $this->query('GET', $path);
 
         if (true !== $response->hasProperty('story')) {
-            throw new RuntimeException('Missing "story" property in response content');
+            throw new BadResponseException('Missing "story" property in response content');
         }
 
         return \PhraseanetSDK\Entity\Story::fromValue($this->em, $response->getProperty('story'));
@@ -45,19 +44,18 @@ class Story extends AbstractRepository
      * @param  integer $offsetStart The offset
      * @param  integer $perPage The number of item per page
      * @return ArrayCollection|Story[]
-     * @throws RuntimeException
      */
     public function find($offsetStart, $perPage)
     {
         $response = $this->query('POST', 'v1/search/', array(), array(
-            'query'        => 'all',
-            'search_type'  => 1,
-            'offset_start' => (int) $offsetStart,
-            'per_page'     => (int) $perPage,
+            'query' => 'all',
+            'search_type' => 1,
+            'offset_start' => (int)$offsetStart,
+            'per_page' => (int)$perPage,
         ));
 
         if (true !== $response->hasProperty('results')) {
-            throw new RuntimeException('Missing "results" property in response content');
+            throw new BadResponseException('Missing "results" property in response content');
         }
 
         return Query::fromValue($this->em, $response->getResult())->getResults()->getStories();
@@ -68,7 +66,6 @@ class Story extends AbstractRepository
      *
      * @param  array $parameters Query parameters
      * @return \PhraseanetSDK\Entity\Query object
-     * @throws RuntimeException
      */
     public function search(array $parameters = array())
     {
@@ -78,7 +75,7 @@ class Story extends AbstractRepository
         ));
 
         if ($response->isEmpty()) {
-            throw new RuntimeException('Response content is empty');
+            throw new BadResponseException('Response content is empty');
         }
 
         return Query::fromValue($this->em, $response->getResult());

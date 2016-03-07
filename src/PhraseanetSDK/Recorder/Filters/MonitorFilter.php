@@ -18,14 +18,8 @@ class MonitorFilter implements FilterInterface
      */
     public function apply(array &$data)
     {
-        $output = array();
-
-        foreach ($data as $request) {
-            if (false === strpos($request['path'], 'api/v1/monitor/')) {
-                $output[] = $request;
-            }
-        }
-
-        $data = $output;
+        $data = array_filter($data, function ($request) {
+            return (false === strpos($request['path'], 'api/v1/monitor/'));
+        });
     }
 }

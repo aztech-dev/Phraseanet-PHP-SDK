@@ -2,7 +2,7 @@
 
 namespace PhraseanetSDK\Search;
 
-use PhraseanetSDK\Exception\RuntimeException;
+use PhraseanetSDK\Exception\BadResponseException;
 use PhraseanetSDK\AbstractRepository;
 
 class SearchRepository extends AbstractRepository
@@ -13,7 +13,6 @@ class SearchRepository extends AbstractRepository
      *
      * @param  mixed[] $parameters Query parameters
      * @return SearchResults object
-     * @throws RuntimeException
      */
     public function search(array $parameters = array())
     {
@@ -24,7 +23,7 @@ class SearchRepository extends AbstractRepository
         $response = $this->query('POST', 'v2/search/', array(), $parameters);
 
         if ($response->isEmpty()) {
-            throw new RuntimeException('Response content is empty');
+            throw new BadResponseException('Response content is empty');
         }
 
         return SearchResults::fromValue($this->em, $parameters['search_type'], $response->getResult());

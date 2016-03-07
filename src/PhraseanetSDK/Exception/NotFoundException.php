@@ -11,6 +11,6 @@
 
 namespace PhraseanetSDK\Exception;
 
-class NotFoundException extends \Exception implements ExceptionInterface
+class NotFoundException extends \RuntimeException
 {
 }

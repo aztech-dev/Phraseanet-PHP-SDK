@@ -12,26 +12,24 @@
 namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
-use PhraseanetSDK\Exception\RuntimeException;
+use PhraseanetSDK\Exception\BadResponseException;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhraseanetSDK\EntityHydrator;
 
 class Basket extends AbstractRepository
 {
     /**
      * Find all baskets that contains the provided record
      *
-     * @param  integer          $databoxId The record databox id
-     * @param  integer          $recordId  The record id
+     * @param  integer $databoxId The record databox id
+     * @param  integer $recordId The record id
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function findByRecord($databoxId, $recordId)
     {
         $response = $this->query('GET', sprintf('v1/records/%d/%d/related/', $databoxId, $recordId));
 
         if (true !== $response->hasProperty('baskets')) {
-            throw new RuntimeException('Missing "baskets" property in response content');
+            throw new BadResponseException('Missing "baskets" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\Basket::fromList($response->getProperty('baskets')));
@@ -41,14 +39,13 @@ class Basket extends AbstractRepository
      * Find all baskets
      *
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function findAll()
     {
         $response = $this->query('GET', 'v1/baskets/list/');
 
         if (true !== $response->hasProperty('baskets')) {
-            throw new RuntimeException('Missing "baskets" property in response content');
+            throw new BadResponseException('Missing "baskets" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\Basket::fromList($response->getProperty('baskets')));

@@ -2,7 +2,7 @@
 
 namespace PhraseanetSDK\Tests\Http;
 
-use PhraseanetSDK\Http\ConnectedGuzzleAdapter;
+use PhraseanetSDK\Client\ConnectedGuzzleAdapter;
 
 class ConnectedGuzzleAdapterTest extends \PHPUnit_Framework_TestCase
 {

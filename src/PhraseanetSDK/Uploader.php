@@ -15,7 +15,7 @@ use PhraseanetSDK\Entity\DataboxCollection;
 use PhraseanetSDK\Entity\Quarantine;
 use PhraseanetSDK\Entity\Record;
 use PhraseanetSDK\Exception\RuntimeException;
-use PhraseanetSDK\Http\APIGuzzleAdapter;
+use PhraseanetSDK\Client\APIGuzzleAdapter;
 
 class Uploader
 {

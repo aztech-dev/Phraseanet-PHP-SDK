@@ -12,25 +12,23 @@
 namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
-use PhraseanetSDK\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhraseanetSDK\EntityHydrator;
+use PhraseanetSDK\Exception\BadResponseException;
 
 class DataboxCollection extends AbstractRepository
 {
     /**
      * Find all collection in the provided databox
      *
-     * @param  integer          $databoxId the databox id
+     * @param  integer $databoxId the databox id
      * @return ArrayCollection|\PhraseanetSDK\Entity\DataboxCollection[]
-     * @throws RuntimeException
      */
     public function findByDatabox($databoxId)
     {
         $response = $this->query('GET', sprintf('v1/databoxes/%d/collections/', $databoxId));
 
         if (true !== $response->hasProperty('collections')) {
-            throw new RuntimeException('Missing "collections" property in response content');
+            throw new BadResponseException('Missing "collections" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\DataboxCollection::fromList(
@@ -42,16 +40,14 @@ class DataboxCollection extends AbstractRepository
      * Finds a collection in all available databoxes
      *
      * @param integer $baseId The base ID of the collection
-     * @return \PhraseanetSDK\Entity\DataboxCollection
-     * @throws \PhraseanetSDK\Exception\NotFoundException
-     * @throws \PhraseanetSDK\Exception\UnauthorizedException
+     * @return DataboxCollection
      */
     public function find($baseId)
     {
         $response = $this->query('GET', sprintf('v1/collections/%d/', $baseId));
 
         if ($response->hasProperty(('collection')) !== true) {
-            throw new RuntimeException('Missing "collection" property in response content');
+            throw new BadResponseException('Missing "collection" property in response content');
         }
 
         return \PhraseanetSDK\Entity\DataboxCollection::fromValue($response->getProperty('collection'));

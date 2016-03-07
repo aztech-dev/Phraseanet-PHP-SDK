@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace PhraseanetSDK\Http;
+namespace PhraseanetSDK\Client;
 
-use PhraseanetSDK\Exception\InvalidArgumentException;
+use PhraseanetSDK\Exception\BadResponseException;
 
 /**
  * Response object from a Phraseanet API call
  */
-class APIResponse
+class ApiResponse
 {
     /** @var \stdClass */
-    protected $result;
+    private $result;
 
     /** @var \stdClass */
     private $meta;
@@ -30,7 +30,7 @@ class APIResponse
     public function __construct(\stdClass $response)
     {
         if (!isset($response->meta) || !isset($response->response)) {
-            throw new InvalidArgumentException('The API json response is malformed');
+            throw new BadResponseException('Malformed response');
         }
 
         $this->meta = $response->meta;

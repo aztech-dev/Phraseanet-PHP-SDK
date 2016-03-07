@@ -11,8 +11,6 @@
 
 namespace PhraseanetSDK\Recorder\Storage;
 
-use PhraseanetSDK\Exception\RuntimeException;
-use PhraseanetSDK\Exception\InvalidArgumentException;
 use PhraseanetSDK\Cache\BackendCacheFactory;
 
 class StorageFactory
@@ -31,16 +29,13 @@ class StorageFactory
      * @param array  $options
      *
      * @return StorageInterface
-     *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
     public function create($type, array $options)
     {
         switch (strtolower($type)) {
             case 'file':
                 if (!isset($options['file'])) {
-                    throw new InvalidArgumentException('Missing option file');
+                    throw new \InvalidArgumentException('Missing option file');
                 }
 
                 return new FilesystemStorage($options['file']);
@@ -55,7 +50,7 @@ class StorageFactory
 
                 return new MemcachedStorage($this->cacheFactory->create('memcached', $host, $port));
             default:
-                throw new InvalidArgumentException(sprintf('Unknown storage %s', $type));
+                throw new \RuntimeException(sprintf('Unknown storage %s', $type));
         }
     }
 }

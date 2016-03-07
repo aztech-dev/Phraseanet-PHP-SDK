@@ -11,13 +11,11 @@
 
 namespace PhraseanetSDK;
 
-use PhraseanetSDK\EntityManager;
+use PhraseanetSDK\Client\Client;
 use PhraseanetSDK\Exception\BadResponseException;
 use PhraseanetSDK\Exception\NotFoundException;
 use PhraseanetSDK\Exception\UnauthorizedException;
-use PhraseanetSDK\Exception\RuntimeException;
-use PhraseanetSDK\Http\APIResponse;
-use PhraseanetSDK\Http\APIGuzzleAdapter;
+use PhraseanetSDK\Client\ApiResponse;
 
 abstract class AbstractRepository
 {
@@ -27,26 +25,18 @@ abstract class AbstractRepository
     protected $em;
 
     /**
-     * @var APIGuzzleAdapter
+     * @var Client
      */
-    private $adapter;
+    private $client;
 
     /**
      * @param EntityManager $em
-     * @param APIGuzzleAdapter $adapter
+     * @param Client $client
      */
-    public function __construct(EntityManager $em, APIGuzzleAdapter $adapter = null)
+    public function __construct(EntityManager $em, Client $client = null)
     {
         $this->em = $em;
-        $this->adapter = $adapter ?: $this->em->getAdapter();
-    }
-
-    /**
-     * @return APIGuzzleAdapter
-     */
-    private function getAdapter()
-    {
-        return $this->adapter;
+        $this->client = $client ?: $this->em->getClient();
     }
 
     /**
@@ -58,16 +48,17 @@ abstract class AbstractRepository
      * @param array $postFields An array of request parameters
      * @param array $headers
      *
-     * @return APIResponse
+     * @return ApiResponse
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
     protected function query($method, $path, $query = array(), $postFields = array(), array $headers = array())
     {
         try {
-            $response = $this->getAdapter()->call($method, $path, $query, $postFields, array(), $headers);
+            $response = $this->client->call($method, $path, $query, $postFields, array(), $headers);
         } catch (BadResponseException $e) {
             $statusCode = $e->getStatusCode();
+
             switch ($statusCode) {
                 case 404:
                     throw new NotFoundException(sprintf('Resource under %s could not be found', $path));
@@ -76,7 +67,7 @@ abstract class AbstractRepository
                     throw new UnauthorizedException(sprintf('Access to the following resource %s is forbidden', $path));
                     break;
                 default:
-                    throw new RuntimeException(sprintf('Something went wrong "%s"', $e->getMessage()));
+                    throw new BadResponseException(sprintf('Something went wrong "%s"', $e->getMessage()));
             }
         }
 

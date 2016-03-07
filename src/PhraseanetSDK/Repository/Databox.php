@@ -12,24 +12,22 @@
 namespace PhraseanetSDK\Repository;
 
 use PhraseanetSDK\AbstractRepository;
-use PhraseanetSDK\Exception\RuntimeException;
+use PhraseanetSDK\Exception\BadResponseException;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhraseanetSDK\EntityHydrator;
 
 class Databox extends AbstractRepository
 {
     /**
-     * Find All databoxes
+     * Find all databoxes
      *
      * @return ArrayCollection
-     * @throws RuntimeException
      */
     public function findAll()
     {
         $response = $this->query('GET', 'v1/databoxes/list/');
 
         if (true !== $response->hasProperty('databoxes')) {
-            throw new RuntimeException('Missing "databoxes" property in response content');
+            throw new BadResponseException('Missing "databoxes" property in response content');
         }
 
         return new ArrayCollection(\PhraseanetSDK\Entity\Databox::fromList($response->getProperty('databoxes')));
